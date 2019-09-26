@@ -8,6 +8,10 @@ public class First_Person_Camera : MonoBehaviour
     // For the Player's camera
     Vector3 camera_rotation;
 
+    // Gets the turn_script
+    public GameObject turnControl;
+    private turn_behaviour playerTurn;
+
     // Raycast
     Ray line;
 
@@ -16,12 +20,17 @@ public class First_Person_Camera : MonoBehaviour
     public Directions.Points player_directions;
     public HandSigns.Signs player_hands;
 
-
+    // Pointer or Looker?
 
     // Array for collision check
     [Header("Collision Boxes for Raycast")]
     public GameObject[] boxes;
-   
+
+    private void Awake()
+    {
+        playerTurn = turnControl.GetComponent<turn_behaviour>();
+    }
+
 
     // Start is called before the first frame update
     void Start()
