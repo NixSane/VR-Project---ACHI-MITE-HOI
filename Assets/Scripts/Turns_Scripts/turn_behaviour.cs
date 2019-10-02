@@ -11,8 +11,8 @@ public class turn_behaviour : MonoBehaviour
     public GameObject ai;
 
     // Variable for those who win
-    int player_win;
-    int ai_win;
+    public int player_win;
+    public int ai_win;
 
     // The pointer
     public bool player_isPointing;
@@ -24,21 +24,28 @@ public class turn_behaviour : MonoBehaviour
         aiScript = ai.GetComponent<AI_Behaviour>();
 
         player_win = 0;
-        ai_win = 0;
-        player_isPointing = false;
-        ai_isPointing = false;
+        ai_win = 0;      
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        // Setting the player and Ai up.
+        player_isPointing = false;
+        ai_isPointing = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(player_win == 0 && ai_win == 0)
+            RockPaperScissors();
+
+        if (player_win > 0 || ai_win > 0)
+            LookOverThere();
+
+        // End the game if one of them win
+        endGame();
     }
 
     void RockPaperScissors()
@@ -46,7 +53,7 @@ public class turn_behaviour : MonoBehaviour
         // If the Player wins
         if (playerScript.player_hands == HandSigns.Signs.ROCK && aiScript.ai_hands == HandSigns.Signs.SCISSORS ||
             playerScript.player_hands == HandSigns.Signs.SCISSORS && aiScript.ai_hands == HandSigns.Signs.PAPER ||
-            playerScript.player_hands == HandSigns.Signs.PAPER && aiScript.ai_hands == HandSigns.Signs.ROCK)
+            playerScript.player_hands == HandSigns.Signs.PAPER && aiScript.ai_hands == HandSigns.Signs.ROCK && player_win == 0)
         {
             Debug.Log(playerScript.player_hands);
             Debug.Log(aiScript.ai_hands);
@@ -56,11 +63,14 @@ public class turn_behaviour : MonoBehaviour
 
             // AI becomes the looker
             ai_isPointing = false;
+
+            player_win++;
         }
+
         // If the AI wins
-        else if (aiScript.ai_hands == HandSigns.Signs.ROCK && playerScript.player_hands == HandSigns.Signs.SCISSORS ||
+        if (aiScript.ai_hands == HandSigns.Signs.ROCK && playerScript.player_hands == HandSigns.Signs.SCISSORS ||
             aiScript.ai_hands == HandSigns.Signs.SCISSORS && playerScript.player_hands == HandSigns.Signs.PAPER ||
-            aiScript.ai_hands == HandSigns.Signs.PAPER && playerScript.player_hands == HandSigns.Signs.ROCK)
+            aiScript.ai_hands == HandSigns.Signs.PAPER && playerScript.player_hands == HandSigns.Signs.ROCK && ai_win == 0)
         {
             Debug.Log(aiScript.ai_hands);
             Debug.Log(playerScript.player_hands);
@@ -68,62 +78,103 @@ public class turn_behaviour : MonoBehaviour
             // AI points. Player looks
             ai_isPointing = true;
             player_isPointing = false;
+
+            ai_win++;
         }
-        // In all other cases, it's a draw.
-        else
+
+        // If draw
+        if (playerScript.player_hands == HandSigns.Signs.ROCK && aiScript.ai_hands == HandSigns.Signs.ROCK ||
+            playerScript.player_hands == HandSigns.Signs.SCISSORS && aiScript.ai_hands == HandSigns.Signs.SCISSORS ||
+            playerScript.player_hands == HandSigns.Signs.PAPER && aiScript.ai_hands == HandSigns.Signs.PAPER)
         {
-            // Both don't win, they continue doing Rock Paper Scissors.
+            Restart_RPS();
         }
     }
 
     void LookOverThere()
     {
         // Player is the pointer and wins
-        if (playerScript.player_directions == Directions.Points.UP && aiScript.ai_points != Directions.Points.DOWN ||
+        if (player_isPointing && playerScript.player_directions == Directions.Points.UP && aiScript.ai_points != Directions.Points.DOWN ||
             playerScript.player_directions == Directions.Points.DOWN && aiScript.ai_points != Directions.Points.UP ||
             playerScript.player_directions == Directions.Points.LEFT && aiScript.ai_points != Directions.Points.LEFT ||
-            playerScript.player_directions == Directions.Points.RIGHT && aiScript.ai_points != Directions.Points.RIGHT)
+            playerScript.player_directions == Directions.Points.RIGHT && aiScript.ai_points != Directions.Points.RIGHT && player_win == 1)
         {
-            Debug.Log(playerScript.player_directions);
-            Debug.Log(aiScript.ai_points);
+            Debug.Log("Player Choose: " + playerScript.player_directions);
+            Debug.Log("AI choose: " + aiScript.ai_points);
 
-            // Player wins the round
-            // UI opens
+            player_win++;
         }
+
+
         // AI is the pointer and wins
-        if (aiScript.ai_points == Directions.Points.UP && playerScript.player_directions != Directions.Points.DOWN ||
+        if (ai_isPointing && aiScript.ai_points == Directions.Points.UP && playerScript.player_directions != Directions.Points.DOWN ||
             aiScript.ai_points == Directions.Points.DOWN && playerScript.player_directions != Directions.Points.UP ||
             aiScript.ai_points == Directions.Points.LEFT && playerScript.player_directions != Directions.Points.LEFT ||
-            aiScript.ai_points == Directions.Points.RIGHT && playerScript.player_directions != Directions.Points.RIGHT)
+            aiScript.ai_points == Directions.Points.RIGHT && playerScript.player_directions != Directions.Points.RIGHT && ai_win == 1)
         {
             Debug.Log(playerScript.player_directions);
             Debug.Log(aiScript.ai_points);
 
-            // AI wins the round
-            // UI opens
+            ai_win++;
         }
-        // In all other cases, it's a draw.
-        else
+      
+    }
+
+    // This restarts the game at the Rock paper scissors point
+    void Restart_RPS()
+    {
+        player_win = 0;
+        ai_win = 0;
+        aiScript.ai_hands = HandSigns.Signs.NONE;
+        playerScript.player_hands = HandSigns.Signs.NONE;
+        aiScript.rngDone = 0;
+    }
+
+    // Restarts the game at the pointing part of the game
+    void Restart_Pointing()
+    {
+
+        aiScript.ai_points = Directions.Points.NONE;
+        playerScript.player_directions = Directions.Points.NONE;
+        aiScript.rngDone = 1;
+    }
+
+
+    void endGame()
+    {
+        if (player_win == 2)
         {
-            // Both don't win, they continue doing ACHI MITE HOI
+            playerScript.RPSCanvas.SetActive(false);
+            playerScript.PointingCanvas.SetActive(false);
+            playerScript.EndGameCanvas.SetActive(true);
+        }
+
+        if (ai_win == 2)
+        {
+            playerScript.RPSCanvas.SetActive(false);
+            playerScript.PointingCanvas.SetActive(false);
+            playerScript.EndGameCanvas.SetActive(true);
         }
     }
 
-    // For deciding who wins
-    void choosePointer()
+    public void replayGame()
     {
-        // If Player won rock paper scissors
-        if (player_isPointing && !ai_isPointing)
-        {
-            // Tells player to use the Oculus controller
-            // AI is told to rotate.
-        }
+        // Reset the UI
+        playerScript.RPSCanvas.SetActive(true);
+        playerScript.PointingCanvas.SetActive(false);
+        playerScript.EndGameCanvas.SetActive(false);
 
-        // If Ai won the rock paper scissors
-        if (!player_isPointing && ai_isPointing)
-        {
-            // Is told to look in the opposite direction the opponent points via UI
-            // AI is set to pointing, or a display tells the player what direction the AI points in
-        }
+        // Win scores go back to zero
+        player_win = 0;
+        ai_win = 0;
+
+        // No one points
+        player_isPointing = false;
+        ai_isPointing = false;
+
+        playerScript.playerState = State.STATE.ROCK_PAPER_SCISSORS;
+        aiScript.ai_State = State.STATE.ROCK_PAPER_SCISSORS;
+
+        playerScript.transform.LookAt(ai.transform);
     }
 }

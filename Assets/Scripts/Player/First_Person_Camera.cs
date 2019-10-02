@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class First_Person_Camera : MonoBehaviour
@@ -20,6 +21,15 @@ public class First_Person_Camera : MonoBehaviour
     public Directions.Points player_directions;
     public HandSigns.Signs player_hands;
 
+    // Buttons from Rock, Paper, Scissors UI
+    [Header("UI Commands")]
+    private UI_Player uiCommands;
+    private UI_Player PointerUI;
+    public GameObject RPSCanvas;
+    public GameObject PointingCanvas;
+    public GameObject EndGameCanvas;
+    
+
     // Pointer or Looker?
 
     // Array for collision check
@@ -28,35 +38,64 @@ public class First_Person_Camera : MonoBehaviour
 
     private void Awake()
     {
-        playerTurn = turnControl.GetComponent<turn_behaviour>();
+        playerTurn = turnControl.GetComponent<turn_behaviour>();          
     }
 
 
     // Start is called before the first frame update
     void Start()
     {
+        // Default Start
         playerState = State.STATE.ROCK_PAPER_SCISSORS;
+        player_hands = HandSigns.Signs.NONE;
+        player_directions = Directions.Points.NONE;
 
         boxes = new GameObject[4];
-
-        line.origin = transform.position;
-        Cursor.lockState = CursorLockMode.Locked;
+        boxes[0] = new GameObject("Up_Box");
+        boxes[1] = new GameObject("Down_Box");
+        boxes[2] = new GameObject("Right_Box");
+        boxes[3] = new GameObject("Left_Box");
+                
+        line.origin = transform.position;       
     }
 
     // Update is called once per frame
     void Update()
     {
-        mouseLook();
-
-        if (playerState == State.STATE.LOOK_OVER_THERE)
+        if (playerTurn.player_isPointing && !playerTurn.ai_isPointing ||
+            !playerTurn.player_isPointing && playerTurn.ai_isPointing)
         {
+            playerState = State.STATE.LOOK_OVER_THERE;
+            RPSCanvas.SetActive(false);
+        }
+
+        if (playerState == State.STATE.LOOK_OVER_THERE && playerTurn.player_isPointing)
+        {
+            PointingCanvas.SetActive(true);
+        }
+
+        // If Player loses, Player his to look around via headset or mouse rotation/
+        if (playerState == State.STATE.LOOK_OVER_THERE && playerTurn.ai_isPointing)
+        {
+            mouseLook();
             rayCast();
         }
+
+        //if (playerTurn.player_win == 2 || playerTurn.ai_win == 2)
+        //{
+        //    RPSCanvas.SetActive(false);
+        //    PointingCanvas.SetActive(false);
+        //    EndGameCanvas.SetActive(true);
+        //}
 
         // So the player can get out of the game
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
+        }
+        else if (Input.GetKeyDown(KeyCode.Escape) && Cursor.lockState == CursorLockMode.None)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 
@@ -73,6 +112,7 @@ public class First_Person_Camera : MonoBehaviour
         transform.eulerAngles = new Vector3(camera_rotation.y, camera_rotation.x, 0.0f);
     }
 
+    // If the player loss
     private void rayCast()
     {
         line = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.5f));
@@ -98,5 +138,50 @@ public class First_Person_Camera : MonoBehaviour
                 player_directions = Directions.Points.LEFT;
             }
         }
+    }
+
+   // End Game UI
+   public void closeGame()
+   {
+        Application.Quit();
+   }
+
+ 
+
+    // Public Directions commands for Pointing buttons
+    public void pointUp()
+    {
+        player_directions = Directions.Points.UP;
+    }
+    public void pointDown()
+    {
+        player_directions = Directions.Points.DOWN;
+    }
+
+    public void pointRight()
+    {
+        player_directions = Directions.Points.RIGHT;
+    }
+
+    public void pointLeft()
+    {
+        player_directions = Directions.Points.LEFT;
+    }
+
+
+    // Rock Paper Scissors for player
+    public void Rock()
+    {
+        player_hands = HandSigns.Signs.ROCK;
+    }
+
+    public void Paper()
+    {
+        player_hands = HandSigns.Signs.PAPER;
+    }
+
+    public void Scissors()
+    {
+        player_hands = HandSigns.Signs.SCISSORS;
     }
 }
