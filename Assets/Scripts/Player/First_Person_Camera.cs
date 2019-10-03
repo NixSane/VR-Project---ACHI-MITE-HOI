@@ -69,7 +69,7 @@ public class First_Person_Camera : MonoBehaviour
             RPSCanvas.SetActive(false);
         }
 
-        if (playerState == State.STATE.LOOK_OVER_THERE && playerTurn.player_isPointing)
+        if (playerState == State.STATE.LOOK_OVER_THERE && playerTurn.player_isPointing && playerTurn.player_win == 1)
         {
             PointingCanvas.SetActive(true);
         }
@@ -121,22 +121,23 @@ public class First_Person_Camera : MonoBehaviour
 
         if (Physics.Raycast(line, out hit))
         {
-            if (hit.collider == boxes[0].gameObject)
+            if (hit.collider.name == boxes[0].name)
             {
-                player_directions = Directions.Points.UP;
+                player_directions = Directions.Points.UP;               
             }
-            if (hit.collider == boxes[1].gameObject)
+            if (hit.collider.name == boxes[1].name)
             {
                 player_directions = Directions.Points.DOWN;
             }
-            if (hit.collider == boxes[2].gameObject)
+            if (hit.collider.name == boxes[2].name)
             {
                 player_directions = Directions.Points.RIGHT;
             }
-            if (hit.collider == boxes[3].gameObject)
+            if (hit.collider.name == boxes[3].name)
             {
                 player_directions = Directions.Points.LEFT;
             }
+            Debug.Log(hit.collider.ToString());
         }
     }
 

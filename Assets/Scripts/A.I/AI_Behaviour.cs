@@ -19,7 +19,7 @@ public class AI_Behaviour : MonoBehaviour
 
     private void Awake()
     {
-        Random.InitState((int)Time.time);
+        Random.InitState((int)System.DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         playerTrigger = player.GetComponent<First_Person_Camera>();
 
         turn_Behaviour = turnControl.GetComponent<turn_behaviour>();

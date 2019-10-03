@@ -38,11 +38,15 @@ public class turn_behaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player_win == 0 && ai_win == 0)
+        if (player_win == 0 && ai_win == 0)
+        {
             RockPaperScissors();
+        }
 
-        if (player_win > 0 || ai_win > 0)
+        if (player_win == 1 || ai_win == 1)
+        {
             LookOverThere();
+        }
 
         // End the game if one of them win
         endGame();
@@ -54,10 +58,7 @@ public class turn_behaviour : MonoBehaviour
         if (playerScript.player_hands == HandSigns.Signs.ROCK && aiScript.ai_hands == HandSigns.Signs.SCISSORS ||
             playerScript.player_hands == HandSigns.Signs.SCISSORS && aiScript.ai_hands == HandSigns.Signs.PAPER ||
             playerScript.player_hands == HandSigns.Signs.PAPER && aiScript.ai_hands == HandSigns.Signs.ROCK && player_win == 0)
-        {
-            Debug.Log(playerScript.player_hands);
-            Debug.Log(aiScript.ai_hands);
-
+        {       
             // Player becomes the pointer
             player_isPointing = true;
 
@@ -93,29 +94,44 @@ public class turn_behaviour : MonoBehaviour
 
     void LookOverThere()
     {
-        // Player is the pointer and wins
-        if (player_isPointing && playerScript.player_directions == Directions.Points.UP && aiScript.ai_points != Directions.Points.DOWN ||
-            playerScript.player_directions == Directions.Points.DOWN && aiScript.ai_points != Directions.Points.UP ||
-            playerScript.player_directions == Directions.Points.LEFT && aiScript.ai_points != Directions.Points.LEFT ||
-            playerScript.player_directions == Directions.Points.RIGHT && aiScript.ai_points != Directions.Points.RIGHT && player_win == 1)
+        if (playerScript.player_directions != Directions.Points.NONE && aiScript.ai_points != Directions.Points.NONE && player_isPointing) 
         {
-            Debug.Log("Player Choose: " + playerScript.player_directions);
-            Debug.Log("AI choose: " + aiScript.ai_points);
+            // Player is the pointer and wins
+            if (playerScript.player_directions == Directions.Points.UP && aiScript.ai_points != Directions.Points.DOWN ||
+                playerScript.player_directions == Directions.Points.DOWN && aiScript.ai_points != Directions.Points.UP ||
+                playerScript.player_directions == Directions.Points.LEFT && aiScript.ai_points != Directions.Points.LEFT ||
+                playerScript.player_directions == Directions.Points.RIGHT && aiScript.ai_points != Directions.Points.RIGHT && player_win == 1)
+            {
+                Debug.Log("Player Choose: " + playerScript.player_directions);
+                Debug.Log("AI choose: " + aiScript.ai_points);
 
-            player_win++;
+                player_win++;
+            }
         }
 
 
-        // AI is the pointer and wins
-        if (ai_isPointing && aiScript.ai_points == Directions.Points.UP && playerScript.player_directions != Directions.Points.DOWN ||
+        if (playerScript.player_directions != Directions.Points.NONE && aiScript.ai_points != Directions.Points.NONE && ai_isPointing)
+        {
+            // AI is the pointer and wins
+            if (aiScript.ai_points == Directions.Points.UP && playerScript.player_directions != Directions.Points.DOWN ||
             aiScript.ai_points == Directions.Points.DOWN && playerScript.player_directions != Directions.Points.UP ||
             aiScript.ai_points == Directions.Points.LEFT && playerScript.player_directions != Directions.Points.LEFT ||
             aiScript.ai_points == Directions.Points.RIGHT && playerScript.player_directions != Directions.Points.RIGHT && ai_win == 1)
-        {
-            Debug.Log(playerScript.player_directions);
-            Debug.Log(aiScript.ai_points);
+            {
+                Debug.Log(playerScript.player_directions);
+                Debug.Log(aiScript.ai_points);
 
-            ai_win++;
+                ai_win++;
+            }
+        }
+
+        // If the looker wins this round, start the game over
+        if (playerScript.player_directions == Directions.Points.UP && aiScript.ai_points == Directions.Points.DOWN ||
+            playerScript.player_directions == Directions.Points.RIGHT && aiScript.ai_points == Directions.Points.RIGHT ||
+            playerScript.player_directions == Directions.Points.LEFT && aiScript.ai_points == Directions.Points.LEFT ||
+            playerScript.player_directions == Directions.Points.DOWN && aiScript.ai_points == Directions.Points.UP)
+        {
+            replayGame();
         }
       
     }
@@ -174,6 +190,15 @@ public class turn_behaviour : MonoBehaviour
 
         playerScript.playerState = State.STATE.ROCK_PAPER_SCISSORS;
         aiScript.ai_State = State.STATE.ROCK_PAPER_SCISSORS;
+
+        playerScript.player_hands = HandSigns.Signs.NONE;
+        aiScript.ai_hands = HandSigns.Signs.NONE;
+
+
+        playerScript.player_directions = Directions.Points.NONE;
+        aiScript.ai_points = Directions.Points.NONE;
+
+        aiScript.rngDone = 0;
 
         playerScript.transform.LookAt(ai.transform);
     }

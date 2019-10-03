@@ -1113,6 +1113,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 534669902}
+  ai_choice: {fileID: 0}
+  text: {fileID: 0}
 --- !u!1 &546117917
 GameObject:
   m_ObjectHideFlags: 0
@@ -3273,7 +3275,6 @@ GameObject:
   - component: {fileID: 1726475877}
   - component: {fileID: 1726475876}
   - component: {fileID: 1726475880}
-  - component: {fileID: 1726475881}
   m_Layer: 5
   m_Name: RockPaperScissors_UI
   m_TagString: Untagged
@@ -3374,19 +3375,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1726475881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726475875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0bccaf0a18e838d439773453ede6e880, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 534669902}
 --- !u!1 &1778115921
 GameObject:
   m_ObjectHideFlags: 0
@@ -3398,6 +3386,7 @@ GameObject:
   - component: {fileID: 1778115922}
   - component: {fileID: 1778115924}
   - component: {fileID: 1778115923}
+  - component: {fileID: 1778115925}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -3454,8 +3443,8 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 'Winner is:'
 --- !u!222 &1778115924
@@ -3466,6 +3455,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1778115921}
   m_CullTransparentMesh: 0
+--- !u!114 &1778115925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1778115921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c716a165580bf9e48be62f199f711a49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  winnerText: {fileID: 1778115923}
+  turnManagerScript: {fileID: 157110604}
 --- !u!1 &1895996566
 GameObject:
   m_ObjectHideFlags: 0
@@ -3697,6 +3700,7 @@ GameObject:
   - component: {fileID: 2082051768}
   - component: {fileID: 2082051770}
   - component: {fileID: 2082051769}
+  - component: {fileID: 2082051771}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -3765,6 +3769,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2082051767}
   m_CullTransparentMesh: 0
+--- !u!114 &2082051771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082051767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bccaf0a18e838d439773453ede6e880, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 534669902}
+  ai_choice: {fileID: 1115732832}
+  text: {fileID: 2082051769}
 --- !u!1 &2118690030
 GameObject:
   m_ObjectHideFlags: 0

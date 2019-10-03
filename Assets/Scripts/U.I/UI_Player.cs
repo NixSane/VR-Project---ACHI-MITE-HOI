@@ -7,19 +7,20 @@ public class UI_Player : MonoBehaviour
 {
     private First_Person_Camera player_state;
     public GameObject player;
-    
+    public AI_Behaviour ai_choice;
+    public Text text;
 
     private GameObject slider;
    
 
     private void Awake()
     {
-        player_state = player.GetComponent<First_Person_Camera>();
-        slider = GetComponent<GameObject>();
+        ai_choice = GetComponent<AI_Behaviour>();
+        text.text = "A.I choose: " + ai_choice.ai_hands.ToString();
     }
 
-    void Update()
-    {      
-       
+    private void Update()
+    {
+        text.text = "A.I choose: " + ai_choice.ai_hands.ToString();
     }
 }
